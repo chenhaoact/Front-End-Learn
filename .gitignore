@@ -1,0 +1,10 @@
+logs
+*.log
+.grunt
+node_modules
+bower_components
+build/
+.idea
+.idea/workspace.xml
+.vscode
+*.log*
