@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas绘制多边形</title>
+</head>
+<body>
+<canvas id="canvas" width="1024" height="768"></canvas>
+</body>
+<script>
+    window.onload = function () {
+        //1.通过js常用方法获取canvas元素,就可以使用如canvas.width = , canvas.hright = ,去指定该就可以使用如canvas元素的宽高
+        var canvas = document.getElementById('canvas');
+
+        //3.通过canvas.getContext判断浏览器是否支持通过canvas，不支持需进行提示以提升兼容性
+        if (canvas.getContext){
+            //2.找到canvas的渲染上下文，然后在它的上面绘制
+            var ctx = canvas.getContext('2d');
+
+            //4.绘图基本都是对该通过canvas.getContext()获取的上下文对象调用一些方法进行绘制，可参考02-开始的代码
+
+            //5.cavas中的绘图是基于状态的绘图，需要先设置状态再调用绘制函数绘图
+
+            //6.设置状态
+            // moveTo() 画笔点移动到某一点
+            // lineTo() 画笔点直线移动到某一点
+            ctx.moveTo(100,100);
+            ctx.lineTo(600,600);
+            ctx.lineTo(100,600);
+            ctx.lineTo(100,100);
+
+
+            //7.进行绘制
+            //8. fill() 轨迹内填充绘制
+            //9. fillStyle 填充绘制的填充色设置
+            ctx.fillStyle = "rgba(0,30,90)";
+            ctx.fill();
+        } else {
+            alert('当前浏览器不支持Canvas,请更换浏览器后再试（如使用最新版本的Chrome浏览器）');
+        }
+
+    }
+</script>
+</html>

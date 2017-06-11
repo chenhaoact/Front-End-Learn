@@ -1,0 +1,16 @@
+{
+  "name": "react-learn",
+  "version": "1.0.0",
+  "description": "注：本文件夹目录下需要进行npm install安装依赖",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "chenhaoact",
+  "license": "ISC",
+  "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  }
+}

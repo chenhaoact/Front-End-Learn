@@ -1,0 +1,1 @@
+为了简化，本demo使用的是直接加载cdn上的react等库的js文件引用依赖，未通过npm安装依赖和webpack搭建环境
