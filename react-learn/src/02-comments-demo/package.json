@@ -1,0 +1,19 @@
+{
+  "name": "02-comments-demo",
+  "version": "1.0.0",
+  "description": "为了简化，本demo的前端使用的是直接加载cdn上的react等库的js文件引用依赖， 未通过npm安装依赖和webpack搭建环境。",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "express"
+  ],
+  "author": "chenhaoact",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3"
+  }
+}
