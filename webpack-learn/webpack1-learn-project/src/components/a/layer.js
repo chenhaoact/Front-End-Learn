@@ -2,6 +2,8 @@
  * Created by chenhaoact on 2017/6/11.
  */
 import tpl from './a.html'
+import './b.less'
+
 
 function a() {
     /**
