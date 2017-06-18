@@ -160,8 +160,11 @@
     var context = canvas.getContext("2d");
     var MARGIN_TOP;
     var MARGIN_LEFT;
+    /**
+     * 9.js通过Date()来设置或者获取时间
+     * */
     var showtime = new Date();
-    var balls = [];
+    var balls = []; //所有小球用balls = [] 数组表示，数组中的每个对象中的属性（包括了各个小球的坐标，速度，加速度信息）
     const colors = ["#51F511", "#66FAD5", "#EF1C3E", "#FFFA5F", "#DE48CD", "#310CF2"];
     window.onload = function () {
         WINDOW_WIDTH = document.documentElement.clientWidth;
@@ -173,6 +176,18 @@
         showtime = new Date();
         canvas.width = WINDOW_WIDTH;
         canvas.height = WINDOW_HEIGHT;
+        /**
+         * 10. 通过setInterval设置倒计时
+         * 每次间隔都渲染canvas上下文
+         * 时间更新逻辑封装在在update()中
+         *
+         * ！！最简单的构造逐帧动画的方式就是像这样：！！
+         * 用setInterval()里里加render()再加update()
+         * render() 绘制当前的画面
+         * update() 根据绘制动画场景对数据进行调整
+         * 50毫秒代表1秒有20帧，动画的帧率就是20
+         * 但用setInterval并不是精确的就是每50毫秒绘制一次的，因为function里的内容执行的效率不同，如果要准确的每50ms绘制一次就需要更加精确的动画绘制方法
+         * */
         setInterval(function () {
             render(context);
             update();
@@ -200,6 +215,9 @@
          * */
         renderDigit(MARGIN_LEFT, MARGIN_TOP, parseInt(hours / 10), cxt);
         renderDigit(MARGIN_LEFT + 15 * (RADIUS + 1), MARGIN_TOP, parseInt(hours % 10), cxt);
+        /**
+         * 8.第三个参数是10，代表渲染digit数组中的第10个字符 即冒号
+         * */
         renderDigit(MARGIN_LEFT + 30 * (RADIUS + 1), MARGIN_TOP, 10, cxt);
         renderDigit(MARGIN_LEFT + 39 * (RADIUS + 1), MARGIN_TOP, parseInt(minutes / 10), cxt);
         renderDigit(MARGIN_LEFT + 54 * (RADIUS + 1), MARGIN_TOP, parseInt(minutes % 10), cxt);
@@ -220,6 +238,15 @@
      * x y 绘制字符的开始位置坐标
      * num 绘制那个个位数
      * cxt 绘制的上下文环境，要实现绘制就必须把canvas绘制的上下文环境传过去
+     *
+     * 通过数学绘图计算分析得到：
+     * 每个字符第i,j个圆的圆心的
+     * x坐标=参数x+j*2*(R+1)+R+1
+     * y坐标=参数x+i*2*(R+1)+R+1
+     * (1代表圆与圆边沿之间的距离的1/2,因为圆之间并不是紧挨的)
+     *
+     * ！技巧：可以字符的每个圆都放在方格子系统中，
+     * 在制作动画，游戏中，经常会用到格子系统去进行计算坐标位置等！
      * */
     function renderDigit(x, y, num, cxt) {
         cxt.fillStyle = "rgb(0,102,153)";
@@ -227,11 +254,19 @@
             for (var j = 0; j < digit[num][i].length; j++)
                 if (digit[num][i][j] == 1) {
                     cxt.beginPath()
+                    /**
+                     * 7. 循环中使用arc绘制每个小圆
+                     * */
                     cxt.arc(x + (RADIUS + 1) + j * 2 * (RADIUS + 1), y + (RADIUS + 1) + i * 2 * (RADIUS + 1), RADIUS, 0, 2 * Math.PI);
                     cxt.closePath();
                     cxt.fill();
                 }
     }
+    /**
+     * 11.显示时间的更新计算逻辑封装在在update()中，小球物理下落动画的逻辑单独再封装到updateBalls();这里只执行一下
+     * 获取时间作为下一次的时间nextTime，如果nextTime的时间和当前时间showtime不同，
+     * 就改变当前显示时间showtime = nextTime;
+     * */
     function update() {
         var nextTime = new Date();
         var nexttimehours = parseInt(nextTime.getHours());
@@ -269,6 +304,17 @@
         showtime = nextTime;
         updateBalls();
     }
+    /**
+     * 12. 小球物理下落动画的逻辑封装
+     * 所有小球用balls = [] 数组表示，
+     * 数组中的每个对象中的属性（包括了各个小球的坐标，速度，加速度信息）
+     * 比如 balls = [{x:512,y:100,r:20,g:2,vx:-4,vy:0,color:'#005588'}]
+     * 代表有一个小球，x,y坐标，半径，加速度，x轴与y轴速度，color等信息
+     *
+     *
+     * 抛体运动的实现,就是按照物理数学规律（比如这里用到抛物线运动计算），
+     * 逐帧的计算和改变各个小球的对应属性值即可
+     * */
     function updateBalls() {
         for (var i = 0; i < balls.length; i++) {
             balls[i].x += balls[i].vx;
@@ -279,6 +325,7 @@
                 balls[i].vy = -balls[i].vy * 0.6;
             }
         }
+        //对边沿进行碰撞检测，碰撞后某方向速度应该反向（按照对应的物理学公式计算）
         var ballscontol = 0;
         for (i = 0; i < balls.length; i++)
             if (balls[i].x + RADIUS > 0 && balls[i].x - RADIUS < WINDOW_WIDTH) {
