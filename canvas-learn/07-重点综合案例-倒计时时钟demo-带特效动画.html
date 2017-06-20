@@ -167,6 +167,12 @@
     var balls = []; //所有小球用balls = [] 数组表示，数组中的每个对象中的属性（包括了各个小球的坐标，速度，加速度信息）
     const colors = ["#51F511", "#66FAD5", "#EF1C3E", "#FFFA5F", "#DE48CD", "#310CF2"];
     window.onload = function () {
+        /**
+         * 16. 屏幕自适应，得到屏幕的宽高
+         * 这样写需要先设置body和canvas的style中的height都设置成100%，否则拿不到屏幕的高
+         * MARGIN_LEFT，MARGIN_TOP，RADIUS，canvas.width，canvas.height
+         * 等都根据屏幕宽高去设置
+         * */
         WINDOW_WIDTH = document.documentElement.clientWidth;
         WINDOW_HEIGHT = document.documentElement.clientHeight;
         MARGIN_LEFT = Math.round(WINDOW_WIDTH / 10);
@@ -198,6 +204,7 @@
      * 3.绘制时钟字符与倒计时的逻辑
      * */
     function render(cxt) {
+        //context.clearRect() 可以对画布上指定的矩形区域进行一次清空
         cxt.clearRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         /**
          * 4. 定义目前要显示的时间，时，分，秒
@@ -224,6 +231,10 @@
         renderDigit(MARGIN_LEFT + 69 * (RADIUS + 1), MARGIN_TOP, 10, cxt);
         renderDigit(MARGIN_LEFT + 78 * (RADIUS + 1), MARGIN_TOP, parseInt(seconds / 10), cxt);
         renderDigit(MARGIN_LEFT + 93 * (RADIUS + 1), MARGIN_TOP, parseInt(seconds % 10), cxt);
+
+        /**
+         * 14.通过balls数组绘制每一个生成的小球
+         * */
         for (var i = 0; i < balls.length; i++) {
             cxt.fillStyle = balls[i].color;
             cxt.beginPath();
@@ -305,7 +316,7 @@
         updateBalls();
     }
     /**
-     * 12. 小球物理下落动画的逻辑封装
+     * 12. 小球物理下落动画的逻辑封装（动画也就是小球位置的变化逻辑）
      * 所有小球用balls = [] 数组表示，
      * 数组中的每个对象中的属性（包括了各个小球的坐标，速度，加速度信息）
      * 比如 balls = [{x:512,y:100,r:20,g:2,vx:-4,vy:0,color:'#005588'}]
@@ -331,10 +342,26 @@
             if (balls[i].x + RADIUS > 0 && balls[i].x - RADIUS < WINDOW_WIDTH) {
                 balls[ballscontol++] = balls[i]
             }
+        /**
+         * 15.性能优化：出画布区域的小球就可以删去了，
+         * 否则小球有增无减，最终内存吃爆渲染不了会崩溃
+         * 并且设置了渲染的上限是300个小球，以保证性能
+         * */
         while (balls.length > Math.min(ballscontol, 300)) {
             balls.pop();
         }
     }
+    /**
+     * 13. 判断和增加小球的逻辑
+     * 每一位的数字改变的时候，会在原来数字的基础上，产生和原来数字形状一样的一群小球
+     * 添加的小球增加到balls数组的数据结构中
+     * 小球的颜色是从colors数组中定义的颜色中随机选择的
+     * 生成小球的逻辑被调用在update()中
+     *
+     * x 要填加小球的的数位的起点的x坐标
+     * y 要填加小球的的数位的起点的y坐标
+     * num 要填加小球的的数字
+     * */
     function addballs(x, y, num) {
         for (var i = 0; i < digit[num].length; i++)
             for (var j = 0; j < digit[num][i].length; j++)
@@ -342,9 +369,12 @@
                     var newball = {
                         x: x + (RADIUS + 1) + j * 2 * (RADIUS + 1),
                         y: y + (RADIUS + 1) + i * 2 * (RADIUS + 1),
+                        //设置随机的加速度
                         g: 1.5 + Math.random(),
+                        //floor取整，设置随机的加速度 -1或+1
                         vx: Math.pow(-1, Math.floor(Math.random() * 100)) * 5,
                         vy: -Math.ceil(Math.random() * 10),
+                        //通过随机生成索引来随机选取随机的颜色
                         color: colors[Math.floor(Math.random() * colors.length)]
                     }
                     balls.push(newball);
