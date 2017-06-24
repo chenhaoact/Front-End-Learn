@@ -17,6 +17,9 @@
             //2.找到canvas的渲染上下文，然后在它的上面绘制
             var ctx = canvas.getContext('2d');
 
+            //10绘制封闭多边形绘路径最好加上beginPath和closePath，可以让线条完全闭合
+            ctx.beginPath();
+
             //4.绘图基本都是对该通过canvas.getContext()获取的上下文对象调用一些方法进行绘制，可参考02-开始的代码
 
             //5.cavas中的绘图是基于状态的绘图，需要先设置状态再调用绘制函数绘图
@@ -29,12 +32,18 @@
             ctx.lineTo(100,600);
             ctx.lineTo(100,100);
 
+            ctx.closePath();
+
 
             //7.进行绘制
             //8. fill() 轨迹内填充绘制
             //9. fillStyle 填充绘制的填充色设置
             ctx.fillStyle = "rgba(0,30,90)";
             ctx.fill();
+
+            //11.填充图像描边的时候，跳虫放前，描边放后，否则描边线的宽度会不准
+            ctx.strokeStyle = "red";
+            ctx.stroke();
         } else {
             alert('当前浏览器不支持Canvas,请更换浏览器后再试（如使用最新版本的Chrome浏览器）');
         }
