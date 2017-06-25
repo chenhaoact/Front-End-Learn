@@ -122,11 +122,14 @@
 <script type="text/javascript">
     //获取元素
     var showShape = document.querySelector('.action-show'), //展示元素
-        createShape = document.querySelector('.create-shape'), //创建形状
-        create = document.querySelector('.create'), //创建按钮
-        face = document.querySelector('.face'), //填充和边框
-        transform = document.querySelector('.transform')
-    selected = null, //当前作用的图形元素
+        //8.拿到工具栏中的创建区的dom,该div下是reac circle ellipse line等选择创建形状的按钮
+        create = document.querySelector('.create'),
+        //9.拿到工具栏中的形状区的dom,该div下选某个形状后对x,y,width等几何属性的条形选择器的控制
+        createShape = document.querySelector('.create-shape'),
+        //10.拿到工具栏中的外形与变换区的填充和描边部分的dom,该div下选某个形状后对填充描边等属性的颜色选择器与条形选择器的控制
+        face = document.querySelector('.face'),
+        transform = document.querySelector('.transform'),
+        selected = null, //当前作用的图形元素
         fillValue = 0,
         strokeValue = 0,
         strokeWidth = 0,
@@ -136,15 +139,16 @@
         rotate = document.getElementById('rotate'),
 
 
-        // 创建默认的svg图形和元素,ns===namespace命名空间（可用于指定标准）
+        // 5. 创建默认的svg图形和元素,ns===namespace命名空间（可用于指定标准）
         svgNS = 'http://www.w3.org/2000/svg',
+        // 6. 默认图形的属性
         defaultShape = {
             rect: 'x:10,y:10,width:200,height:200,rx:0,ry:0',
             circle: 'cx:200,cy:200,r:50',
             ellipse: 'cx:200,cy:200,rx:80,ry:30',
             line: 'x1:10,y1:10,x2:100,y2:100'
         },
-        // 默认图形的公共属性
+        // 7.默认图形的公共属性
         defaultAttrs = {
             fill: '#fff',
             stroke: '#007fff'
