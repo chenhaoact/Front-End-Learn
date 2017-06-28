@@ -154,7 +154,19 @@
             stroke: '#007fff'
         };
 
-    // 创建svg元素
+    /**
+     * 8. 创建svg元素,点击后选中当前图像方便进行属性编辑控制。
+     *
+     * var svg = document.createElementNS(svgNS, 'svg');
+     *
+     * svg.setAttribute() 设置属性
+     *
+     * 某元素.appendChild(svg) 将其添加到某个元素中去展示
+     *
+     * svg.addEventListener('click', function (e) {
+     *   其中的e.target能拿到事件目标元素的一些属性
+     * }) 给该元素添加事件
+     */
     function createSVG() {
         // 创建svg元素需要命名空间
         var svg = document.createElementNS(svgNS, 'svg');
@@ -166,7 +178,7 @@
             // 如果点击的形状在默认的图形的属性中
             // for in循环的属性
             if (e.target.tagName.toLowerCase() in defaultShape) {
-                // 创建多个图形，点击后选择当前图形
+                //9. 创建多个图形，点击后选择当前图形
                 selectShape(e.target);
             }
         }, false);
@@ -191,7 +203,9 @@
         }
     }
 
-    // 创建图形和默认属性
+    /**
+     * 10. 设置设置所创建图形的属性
+     * */
     function selectShape(shape) {
         // 绘制默认图形的所以属性用逗号分开为一个数组
         var attrs = defaultShape[shape.tagName].split(',');
@@ -211,7 +225,7 @@
             name = attr[0]; //属性名字
             // 属性值为在元素中设置 或者 默认的
             value = shape.getAttribute(name) || attr[1];
-            // 创建图形处理按钮
+            // 11. 创建图形处理按钮
             createHandler(shape, name, value);
             // 修改默认图形
             shape.setAttribute(name, value);
@@ -225,21 +239,26 @@
         }
         // 指向当前作用的元素
         selected = shape;
-        // 更新创建图形的属性
+        /**
+         * 13. 更新外观与变幻区（因为选中不同的图形时其中的内容需要更新）
+         * */
         updateLookHandler();
     }
 
-    // 创建图形对于的操作手柄
+    /**
+     * 12. 创建图形对应的操作区dom
+     * */
     function createHandler(shape, name, value) {
         var label = document.createElement('label');
         label.innerHTML = name + '<input type="range" min="0" max="800" value="' + value + '" name="' + name + '" />';
         createShape.appendChild(label);
     }
 
-    // 更新创建图形的属性
-
+    /**
+     * 14. 更新外观与变幻区（因为选中不同的图形时其中的内容需要更新）
+     */
     function updateLookHandler() {
-        //初始化的transform属性,如果开始设置的时候，存在transfor属性的话
+        //15. 初始化的transform属性,如果开始设置的时候，存在transfor属性的话
         var t = decodeTransform(selected.getAttribute('transform'));
         // 使得点击图形是对应的转换手柄恢复到点击的那个图形的值
         translateX.value = t ? t.tx : 0;
@@ -278,6 +297,7 @@
             return;
         }
         if (e.target.tagName.toLowerCase() === 'input') {
+            //17.
             selected.setAttribute('transform', encodeTransform({
                 tx: translateX.value,
                 ty: translateY.value,
@@ -287,8 +307,11 @@
         }
     }, false);
 
-    // 变形的参数匹配,下面是参考格式,2d的格式
-    // transform="translate(30, 30) rotate(45) "
+    /**
+     * 16.
+     * 变形的参数匹配,下面是参考格式,2d的格式
+     * transform="translate(30, 30) rotate(45) "
+     */
     function decodeTransform(transString) {
         // 匹配正则
         var reg = /translate\((\d+),(\d+)\)\srotate\((\d+)\)\sscale\((\d+|\d?\.\d)\)/;
@@ -303,6 +326,7 @@
         // 匹配的话返回一个对象，不然返回一个空对象
     }
 
+    //18.
     function encodeTransform(transObject) {
         // 返回一个对象
         return 'translate(' + transObject.tx + ',' + transObject.ty + ')' + ' ' + 'rotate(' + transObject.rotate + ')' + ' ' + 'scale(' + transObject.scale + ')';
